@@ -1,0 +1,8 @@
+.next-lib-template_container {
+    background-color: black;
+    color: white
+}
+.next-lib-template_container::after {
+        content: '';
+        margin-bottom: 50px;
+    }
