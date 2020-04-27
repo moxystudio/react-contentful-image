@@ -1,58 +1,227 @@
--------
-### ⚠️  PLEASE READ THE [INSTRUCTIONS](/INSTRUCTIONS.md) FOR GUIDELINES ON HOW TO START YOUR PACKAGE.
-> Don't forget to remove this warning while updating this README.
--------
-
-# {package-name}
+# react-contentful-image
 
 [![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][build-status-image]][build-status-url] [![Coverage Status][codecov-image]][codecov-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url]
 
-[npm-url]:https://npmjs.org/package/@moxy/{package-name}
-[downloads-image]:https://img.shields.io/npm/dm/@moxy/{package-name}.svg
-[npm-image]:https://img.shields.io/npm/v/@moxy/{package-name}.svg
-[build-status-url]:https://github.com/moxystudio/{package-name}/actions
-[build-status-image]:https://img.shields.io/github/workflow/status/moxystudio/{package-name}/Node%20CI/master
-[codecov-url]:https://codecov.io/gh/moxystudio/{package-name}
-[codecov-image]:https://img.shields.io/codecov/c/github/moxystudio/{package-name}/master.svg
-[david-dm-url]:https://david-dm.org/moxystudio/{package-name}
-[david-dm-image]:https://img.shields.io/david/moxystudio/{package-name}.svg
-[david-dm-dev-url]:https://david-dm.org/moxystudio/{package-name}?type=dev
-[david-dm-dev-image]:https://img.shields.io/david/dev/moxystudio/{package-name}.svg
+[npm-url]:https://npmjs.org/package/@moxy/react-contentful-image
+[downloads-image]:https://img.shields.io/npm/dm/@moxy/react-contentful-image.svg
+[npm-image]:https://img.shields.io/npm/v/@moxy/react-contentful-image.svg
+[build-status-url]:https://github.com/moxystudio/react-contentful-image/actions
+[build-status-image]:https://img.shields.io/github/workflow/status/moxystudio/react-contentful-image/Node%20CI/master
+[codecov-url]:https://codecov.io/gh/moxystudio/react-contentful-image
+[codecov-image]:https://img.shields.io/codecov/c/github/moxystudio/react-contentful-image/master.svg
+[david-dm-url]:https://david-dm.org/moxystudio/react-contentful-image
+[david-dm-image]:https://img.shields.io/david/moxystudio/react-contentful-image.svg
+[david-dm-dev-url]:https://david-dm.org/moxystudio/react-contentful-image?type=dev
+[david-dm-dev-image]:https://img.shields.io/david/dev/moxystudio/react-contentful-image.svg
 
-{package-description}
+A react image rendering using Contentful Images API.
 
 ## Installation
 
 ```sh
-$ npm install @moxy/{package-name}
+$ npm install @moxy/react-contentful-image
 ```
 
 This library is written in modern JavaScript and is published in both CommonJS and ES module transpiled variants. If you target older browsers please make sure to transpile accordingly.
 
 ## Motivation
 
-{package-motivation}
+[Contentful](https://www.contentful.com/) provides a very powerful [Images API](https://www.contentful.com/developers/docs/references/images-api/) that besides retrieving image files in spaces, it provides manipulation features such as resizing, cropping and compressing.
+
+This react component will return a `<picture>` element. The `<picture>` contains at least one `<source>` element if no manipulations are being made and two `<source>` elements if there are manipulations. It also contains the native `<img>` element as fallback for browsers that do not support the `<picture>` element.
 
 ## Usage
 
-{package-usage-example}
+```js
+import React from 'react';
+import ContentfulImage from '@moxy/react-contentful-image';
+
+const src = "//images.ctfassets.net/yadj1kx9rmg0/wtrHxeu3zEoEce2MokCSi/cf6f68efdcf625fdc060607df0f3baef/quwowooybuqbl6ntboz3.jpg";
+
+const MyComponent = (props) => (
+    <div {...props}>
+        <ContentfulImage
+            src={ src }
+            format="png"
+            resize={ { width: 100, height: 100 } } />
+    </div>
+);
+
+export default MyComponent;
+```
 
 ## API
 
-{package-api-description}
+Besides the following supported props by the `<ContentfulImage>` component, additional props will be spread to the `<img>` element.
 
-#### {package-api-prop-example}
+#### src
 
-Type: `object`
+Type: `string`  
 Required: `true`
 
-The `{package-api-prop-example}` has the following shape:
+The image source url.
+
+Example:
+
 ```js
-{package-api-prop-example}: PropTypes.shape({
-    foo: PropTypes.string,
-    bar: PropTypes.arrayOf(PropTypes.object),
-}).isRequired,
+<ContentfulImage src={ src } />
 ```
+
+#### format
+
+Type: `string`  
+Required: `false`   
+Default: `webp`
+
+The new format to convert the image. The possibilities are:
+- `webp`
+- `jpg`
+- `png`
+- `progressive jpg`
+- `8bit png`
+
+Example:
+
+```js
+<ContentfulImage
+    src={ src }
+    format="progressive jpg" />
+```
+
+If no `format` prop is passed, this component will convert the image to [`webp`](https://developers.google.com/speed/webp) by default as it provides small images weight with high visual quality. The example above will override this default value and will convert the image to `progressive jpg`. If you want to keep your image format with no conversions, please see [`optimize` prop](#optimize).
+
+ℹ️ Read more about Contentful Images API format conversion [here](https://www.contentful.com/developers/docs/references/images-api/#/reference/changing-formats).
+
+#### resize
+
+Type: `object`  
+Required: `false`
+
+Resizing configuration object. This object has the following shape:
+- `width` - Desired width
+- `height` - Desired height
+- `behavior` - Specifies the resizing behavior. The possible values are:
+  - `pad`
+  - `fill`
+  - `scale`
+  - `crop`
+  - `thumb`
+- `focusArea` - Specifies the focus area when resizing. The possible values are:
+  - `top`
+  - `right`
+  - `bottom`
+  - `left`
+  - `center`
+  - `top_right`
+  - `top_left`
+  - `bottom_right`
+  - `bottom_left`
+  - `face`
+  - `faces`
+
+Example:
+
+```js
+const resizeValues = {
+    width: 100,
+    height: 100,
+    behavior: 'crop',
+    focusArea: 'top_right'
+};
+
+// ...
+
+<ContentfulImage
+    src={ src }
+    resize={ resizeValues } />
+```
+
+⚠️ Please, note the following warnings:
+- The maximum value for both `width` and `height` properties is is 4000 pixels.
+- `focusArea` property won't have effect on the default or `scale` behavior.
+
+ℹ️ Read more about resizing images with Contentful Images API [here](https://www.contentful.com/developers/docs/references/images-api/#/reference/resizing-&-cropping).
+
+#### cropRadius
+
+Type: `string || number`    
+Required: `false`
+
+Add rounded corners or create a circle/ellipsis. The possible values are:
+
+- `max` keyword - Creates a full circle/ellipsis
+- The size of the corner radius in pixels
+
+Example:
+
+```js
+<ContentfulImage
+    src={ src }
+    cropRadius="max" />
+
+// or
+
+<ContentfulImage
+    src={ src }
+    cropRadius={ 30 } />
+```
+
+ℹ️ Read more about cropping images with Contentful Images API [here](https://www.contentful.com/developers/docs/references/images-api/#/reference/resizing-&-cropping/crop-rounded-corners-&-circle-elipsis).
+
+#### quality
+
+Type: `number`  
+Required: `false`
+
+Sets the quality of the image. The value must be between **1** and **100**.
+
+Example:
+
+```js
+<ContentfulImage
+    src={ src }
+    format="jpg"
+    quality={ 10 } />
+```
+
+⚠️ This value will be ignored for 8-bit PNGs.
+
+ℹ️ Read more about changing the image quality with Contentful Images API [here](https://www.contentful.com/developers/docs/references/images-api/#/reference/image-manipulation/quality).
+
+#### backgroundColor
+
+Type: `string`  
+Required: `false`
+
+Sets the background color when using `cropRadius` or the `pad` behavior. Color hex code is expected as the value.
+
+Example:
+
+```js
+<ContentfulImage
+    src={ src }
+    cropRadius="max"
+    backgroundColor="#FFFFFF" />
+```
+
+ℹ️ Read more about changing the image background color with Contentful Images API [here](https://www.contentful.com/developers/docs/references/images-api/#/reference/image-manipulation/background-color).
+
+#### optimize
+
+Type: `bool`    
+Required: `false`   
+Default: `true`
+
+If no `format` is passed, this component will use `webp` format as default. To convert to any other format, just use [`format` prop](#format) to override the default value. If you want to keep your image with no format manipulations set this prop to `false`.
+
+Example:
+
+```js
+<ContentfulImage
+    src={ src }
+    optimize={ false } />
+```
+
 
 ## Tests
 
@@ -65,7 +234,7 @@ $ npm test -- --watch # during development
 
 A demo [Next.js](https://nextjs.org/) project is available in the [`/demo`](./demo) folder so you can try out this component.
 
-First, build the `{package-name}` project with:
+First, build the `react-contentful-image` project with:
 
 ```sh
 $ npm run build
@@ -82,4 +251,4 @@ $ npm run dev
 
 ## License
 
-Released under the [MIT License](https://www.opensource.org/licenses/mit-license.php).
+Released under the [MIT License](./LICENSE).
