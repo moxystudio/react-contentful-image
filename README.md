@@ -14,7 +14,7 @@
 [david-dm-dev-url]:https://david-dm.org/moxystudio/react-contentful-image?type=dev
 [david-dm-dev-image]:https://img.shields.io/david/dev/moxystudio/react-contentful-image.svg
 
-A react image rendering using Contentful Images API.
+A react image renderer that uses the Contentful Images API.
 
 ## Installation
 
@@ -26,9 +26,9 @@ This library is written in modern JavaScript and is published in both CommonJS a
 
 ## Motivation
 
-[Contentful](https://www.contentful.com/) provides a very powerful [Images API](https://www.contentful.com/developers/docs/references/images-api/) that besides retrieving image files in spaces, it provides manipulation features such as resizing, cropping and compressing.
+[Contentful](https://www.contentful.com/) provides a very powerful [Images API](https://www.contentful.com/developers/docs/references/images-api/) that besides retrieving image files, provides manipulation features such as resizing, cropping and compressing.
 
-This react component will return a `<picture>` element. The `<picture>` contains at least one `<source>` element if no manipulations are being made and two `<source>` elements if there are manipulations. It also contains the native `<img>` element as fallback for browsers that do not support the `<picture>` element.
+This react component returns a `<picture>` element. If no manipulations are made, the `<picture>` contains at least one `<source>` element, otherwise it will have two `<source>`. It also contains the native `<img>` as fallback for browsers that do not support the `<picture>` element.
 
 ## Usage
 
@@ -56,8 +56,7 @@ Besides the following supported props by the `<ContentfulImage>` component, addi
 
 #### src
 
-Type: `string`  
-Required: `true`
+Type: `string` | Required: `true`
 
 The image source url.
 
@@ -69,9 +68,7 @@ Example:
 
 #### format
 
-Type: `string`  
-Required: `false`   
-Default: `webp`
+Type: `string` | Required: `false` | Default: `webp`
 
 The new format to convert the image. The possibilities are:
 - `webp`
@@ -94,8 +91,7 @@ If no `format` prop is passed, this component will convert the image to [`webp`]
 
 #### resize
 
-Type: `object`  
-Required: `false`
+Type: `object` | Required: `false`
 
 Resizing configuration object. This object has the following shape:
 - `width` - Desired width
@@ -137,15 +133,14 @@ const resizeValues = {
 ```
 
 ⚠️ Please, note the following warnings:
-- The maximum value for both `width` and `height` properties is is 4000 pixels.
+- The maximum value for both `width` and `height` properties is 4000 pixels.
 - `focusArea` property won't have effect on the default or `scale` behavior.
 
 ℹ️ Read more about resizing images with Contentful Images API [here](https://www.contentful.com/developers/docs/references/images-api/#/reference/resizing-&-cropping).
 
 #### cropRadius
 
-Type: `string || number`    
-Required: `false`
+Type: `string` or `number` | Required: `false`
 
 Add rounded corners or create a circle/ellipsis. The possible values are:
 
@@ -170,8 +165,7 @@ Example:
 
 #### quality
 
-Type: `number`  
-Required: `false`
+Type: `number` | Required: `false`
 
 Sets the quality of the image. The value must be between **1** and **100**.
 
@@ -190,8 +184,7 @@ Example:
 
 #### backgroundColor
 
-Type: `string`  
-Required: `false`
+Type: `string` | Required: `false`
 
 Sets the background color when using `cropRadius` or the `pad` behavior. Color hex code is expected as the value.
 
@@ -208,9 +201,7 @@ Example:
 
 #### optimize
 
-Type: `bool`    
-Required: `false`   
-Default: `true`
+Type: `bool` | Required: `false` | Default: `true`
 
 If no `format` is passed, this component will use `webp` format as default. To convert to any other format, just use [`format` prop](#format) to override the default value. If you want to keep your image with no format manipulations set this prop to `false`.
 

@@ -53,7 +53,7 @@ describe('ContentfulImage component', () => {
         expect(fallbackImgElem).toHaveAttribute('src', imageSrc);
     });
 
-    it('should\'t convert to any format when optimize prop is false', () => {
+    it('should not convert to any format when optimize prop is false', () => {
         const {
             pictureElem,
             elem0: sourceElem,

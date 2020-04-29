@@ -6,18 +6,17 @@ import { FORMAT, RESIZE, CROP, QUALITY, BACKGROUND_COLOR } from './constants';
 const ContentfulImage = forwardRef(({ format, optimize, resize, cropRadius, quality, backgroundColor, ...imageProps }, ref) => {
     const { convertedUrl, mimeType, originalUrl } = useMemo(() => {
         const originalUrl = imageProps.src;
-        let urlParameters = '';
+        const urlParameters = [];
         let returnedMimeType;
 
         if (optimize) {
             const { url, mimeType } = buildUrlParameters({
                 key: FORMAT,
                 value: format,
-                currentUrlParameters: urlParameters,
                 includeMimeType: true,
             });
 
-            urlParameters = urlParameters.concat(url);
+            urlParameters.push(...url);
             returnedMimeType = mimeType;
         }
 
@@ -25,44 +24,44 @@ const ContentfulImage = forwardRef(({ format, optimize, resize, cropRadius, qual
             const url = buildUrlParameters({
                 key: RESIZE,
                 value: resize,
-                currentUrlParameters: urlParameters,
             });
 
-            urlParameters = urlParameters.concat(url);
+            urlParameters.push(...url);
         }
 
         if (cropRadius) {
             const url = buildUrlParameters({
                 key: CROP,
                 value: cropRadius,
-                currentUrlParameters: urlParameters,
             });
 
-            urlParameters = urlParameters.concat(url);
+            urlParameters.push(...url);
         }
 
         if (quality) {
             const url = buildUrlParameters({
                 key: QUALITY,
                 value: quality,
-                currentUrlParameters: urlParameters,
             });
 
-            urlParameters = urlParameters.concat(url);
+            urlParameters.push(...url);
         }
 
         if (backgroundColor) {
             const url = buildUrlParameters({
                 key: BACKGROUND_COLOR,
                 value: backgroundColor,
-                currentUrlParameters: urlParameters,
             });
 
-            urlParameters = urlParameters.concat(url);
+            urlParameters.push(...url);
         }
 
+        const convertedUrl = urlParameters.length ?
+            `${originalUrl}?${urlParameters.join('&')}` :
+            originalUrl;
+
         return {
-            convertedUrl: originalUrl.concat(urlParameters),
+            convertedUrl,
             mimeType: returnedMimeType,
             originalUrl,
         };
