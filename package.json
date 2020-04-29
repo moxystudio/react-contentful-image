@@ -1,6 +1,6 @@
 {
   "name": "@moxy/react-contentful-image",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A react image renderer that uses the Contentful Images API.",
   "main": "lib/index.js",
   "module": "es/index.js",
