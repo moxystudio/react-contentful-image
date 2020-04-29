@@ -1,77 +1,75 @@
 import React, { forwardRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import get from 'lodash.get';
 import buildUrlParameters from './utils';
 import { FORMAT, RESIZE, CROP, QUALITY, BACKGROUND_COLOR } from './constants';
 
-const ContentfulImage = forwardRef(({ format, optimize, resize, cropRadius, quality, backgroundColor, ...imageProps }, ref) => {
-    const { convertedUrl, mimeType, originalUrl } = useMemo(() => {
-        const originalUrl = imageProps.src;
+const ContentfulImage = forwardRef(({ format, optimize, resize, cropRadius, quality, backgroundColor, image, ...imageProps }, ref) => {
+    const imageData = useMemo(() => {
+        const originalUrl = typeof image === 'string' ? image : get(image, 'fields.file.url');
+
+        if (!originalUrl) {
+            return;
+        }
+
         const urlParameters = [];
         let returnedMimeType;
 
         if (optimize) {
-            const { url, mimeType } = buildUrlParameters({
-                key: FORMAT,
-                value: format,
-                includeMimeType: true,
-            });
+            const { url, mimeType } = buildUrlParameters({ key: FORMAT, value: format });
 
             urlParameters.push(...url);
             returnedMimeType = mimeType;
         }
 
         if (resize) {
-            const url = buildUrlParameters({
-                key: RESIZE,
-                value: resize,
-            });
+            const url = buildUrlParameters({ key: RESIZE, value: resize });
 
             urlParameters.push(...url);
         }
 
         if (cropRadius) {
-            const url = buildUrlParameters({
-                key: CROP,
-                value: cropRadius,
-            });
+            const url = buildUrlParameters({ key: CROP, value: cropRadius });
 
             urlParameters.push(...url);
         }
 
         if (quality) {
-            const url = buildUrlParameters({
-                key: QUALITY,
-                value: quality,
-            });
+            const url = buildUrlParameters({ key: QUALITY, value: quality });
 
             urlParameters.push(...url);
         }
 
         if (backgroundColor) {
-            const url = buildUrlParameters({
-                key: BACKGROUND_COLOR,
-                value: backgroundColor,
-            });
+            const url = buildUrlParameters({ key: BACKGROUND_COLOR, value: backgroundColor });
 
             urlParameters.push(...url);
         }
 
-        const convertedUrl = urlParameters.length ?
+        const enhancedUrl = urlParameters.length ?
             `${originalUrl}?${urlParameters.join('&')}` :
             originalUrl;
 
         return {
-            convertedUrl,
+            enhancedUrl,
             mimeType: returnedMimeType,
             originalUrl,
         };
-    }, [imageProps.src, format, resize, optimize, cropRadius, quality, backgroundColor]);
+    }, [image, format, resize, optimize, cropRadius, quality, backgroundColor]);
+
+    if (!imageData) {
+        console.error('ContentfulImage: Could not retrieve an URL from the `image` prop. Please check your object structure.');
+
+        return null;
+    }
+
+    const { enhancedUrl, mimeType, originalUrl } = imageData;
 
     return (
         <picture data-testid="picture">
-            { convertedUrl !== originalUrl && <source srcSet={ convertedUrl } type={ mimeType } /> }
+            { enhancedUrl !== originalUrl && <source srcSet={ enhancedUrl } type={ mimeType } /> }
             <source srcSet={ originalUrl } />
-            <img { ...imageProps } ref={ ref } />
+            <img { ...imageProps } src={ originalUrl } ref={ ref } />
         </picture>
     );
 });
@@ -79,7 +77,10 @@ const ContentfulImage = forwardRef(({ format, optimize, resize, cropRadius, qual
 ContentfulImage.propTypes = {
     optimize: PropTypes.bool,
     quality: PropTypes.number,
-    src: PropTypes.string.isRequired,
+    image: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object,
+    ]).isRequired,
     backgroundColor: PropTypes.string,
     cropRadius: PropTypes.oneOfType([
         PropTypes.oneOf(['max']),

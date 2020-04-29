@@ -41,7 +41,7 @@ const src = "//images.ctfassets.net/yadj1kx9rmg0/wtrHxeu3zEoEce2MokCSi/cf6f68efd
 const MyComponent = (props) => (
     <div {...props}>
         <ContentfulImage
-            src={ src }
+            image={ src }
             format="png"
             resize={ { width: 100, height: 100 } } />
     </div>
@@ -54,16 +54,47 @@ export default MyComponent;
 
 Besides the following supported props by the `<ContentfulImage>` component, additional props will be spread to the `<img>` element.
 
-#### src
+#### image
 
-Type: `string` | Required: `true`
+Type: `string` or `object` | Required: `true`
 
-The image source url.
+The actual image. It can be provided as an URL (`string`) or as a Contentful asset (`object`).
+
+
+A Contentful asset usually has the following structure:
+
+```js
+{
+    // ...
+    fields: {
+        // ...
+        file: {
+            // ...
+            url: 'my-image-url',
+            // ...
+        },
+        // ...
+    },
+    // ...
+}
+```
+
+Thus, you can pass it to this component and the image will be properly handled.
 
 Example:
 
 ```js
-<ContentfulImage src={ src } />
+const src = 'my-image-url';
+
+<ContentfulImage image={ src } />
+```
+
+or
+
+```js
+const { image } = page.fields;
+
+<ContentfulImage image={ image } />
 ```
 
 #### format
@@ -81,7 +112,7 @@ Example:
 
 ```js
 <ContentfulImage
-    src={ src }
+    image={ src }
     format="progressive jpg" />
 ```
 
@@ -128,7 +159,7 @@ const resizeValues = {
 // ...
 
 <ContentfulImage
-    src={ src }
+    image={ src }
     resize={ resizeValues } />
 ```
 
@@ -151,13 +182,13 @@ Example:
 
 ```js
 <ContentfulImage
-    src={ src }
+    image={ src }
     cropRadius="max" />
 
 // or
 
 <ContentfulImage
-    src={ src }
+    image={ src }
     cropRadius={ 30 } />
 ```
 
@@ -173,7 +204,7 @@ Example:
 
 ```js
 <ContentfulImage
-    src={ src }
+    image={ src }
     format="jpg"
     quality={ 10 } />
 ```
@@ -192,7 +223,7 @@ Example:
 
 ```js
 <ContentfulImage
-    src={ src }
+    image={ src }
     cropRadius="max"
     backgroundColor="#FFFFFF" />
 ```
@@ -209,7 +240,7 @@ Example:
 
 ```js
 <ContentfulImage
-    src={ src }
+    image={ src }
     optimize={ false } />
 ```
 

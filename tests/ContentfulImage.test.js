@@ -3,9 +3,7 @@ import { render } from '@testing-library/react';
 import ContentfulImage from '../src/ContentfulImage';
 
 const imageSrc = '//images.ctfassets.net/yadj1kx9rmg0/wtrHxeu3zEoEce2MokCSi/cf6f68efdcf625fdc060607df0f3baef/quwowooybuqbl6ntboz3.jpg';
-const defaultProps = {
-    src: imageSrc,
-};
+const defaultProps = { image: imageSrc };
 
 const renderWithProps = (props = {}) => render(<ContentfulImage { ...defaultProps } { ...props } />);
 
@@ -25,6 +23,10 @@ const renderAndRetrieveElements = (props = {}) => {
     };
 };
 
+beforeEach(() => {
+    console.error.mock && console.error.mockRestore();
+});
+
 describe('ContentfulImage component', () => {
     it('should render correctly', () => {
         const {
@@ -38,6 +40,34 @@ describe('ContentfulImage component', () => {
         expect(firstSourceElem.tagName).toMatch(/source/i);
         expect(fallbackSourceElem.tagName).toMatch(/source/i);
         expect(fallbackImgElem.tagName).toMatch(/img/i);
+    });
+
+    it('should accept an object for "image" prop', () => {
+        const image = { fields: { file: { url: imageSrc } } };
+
+        const {
+            pictureElem,
+            elem0: firstSourceElem,
+            elem1: fallbackSourceElem,
+            elem2: fallbackImgElem,
+        } = renderAndRetrieveElements({ image });
+
+        expect(pictureElem.childNodes).toHaveLength(3);
+        expect(firstSourceElem.tagName).toMatch(/source/i);
+        expect(fallbackSourceElem.tagName).toMatch(/source/i);
+        expect(fallbackImgElem.tagName).toMatch(/img/i);
+    });
+
+    it('should not render and should log an error when "image" prop is an object with incorrect structure', () => {
+        jest.spyOn(console, 'error').mockImplementation();
+
+        const image = { fields: { file: { foo: imageSrc } } };
+
+        const { queryByTestId } = renderWithProps({ image });
+        const pictureElem = queryByTestId('picture');
+
+        expect(console.error.mock.calls[0][0]).toMatch('ContentfulImage: Could not retrieve an URL from the `image` prop. Please check your object structure.'); // eslint-disable-line max-len
+        expect(pictureElem).not.toBeInTheDocument();
     });
 
     it('should convert to webp format by default', () => {

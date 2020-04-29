@@ -9,7 +9,7 @@ const Home = () => (
         <ContentfulImage
             backgroundColor="#9090ff"
             resize={ { width: 100, height: 100, behavior: 'pad' } }
-            src="//images.ctfassets.net/yadj1kx9rmg0/wtrHxeu3zEoEce2MokCSi/cf6f68efdcf625fdc060607df0f3baef/quwowooybuqbl6ntboz3.jpg" />
+            image="//images.ctfassets.net/yadj1kx9rmg0/wtrHxeu3zEoEce2MokCSi/cf6f68efdcf625fdc060607df0f3baef/quwowooybuqbl6ntboz3.jpg" />
     </div>
 );
 
