@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "description": "demo",
   "main": "index.js",
-  "author": "Paulo Marcos <paulo.marcos@moxy.studio>",
+  "author": "Pedro Santos <pedro.santos@moxy.studio>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/moxystudio/react-lib-template.git"
+    "url": "git+https://github.com/moxystudio/react-contentful-image.git"
   },
   "scripts": {
     "dev": "onchange -i -k  \"../lib/**/*.js\" -- next",
@@ -16,10 +16,8 @@
     "export": "next export"
   },
   "dependencies": {
-    "@moxy/react-lib-template": "file:..",
+    "@moxy/react-contentful-image": "file:..",
     "next": "^9.2.0",
-    "onchange": "^6.1.0",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "onchange": "^6.1.0"
   }
 }
