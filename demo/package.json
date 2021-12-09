@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@moxy/react-contentful-image": "file:..",
-    "next": "^9.2.0",
+    "next": "^11.1.3",
     "onchange": "^6.1.0"
   }
 }
